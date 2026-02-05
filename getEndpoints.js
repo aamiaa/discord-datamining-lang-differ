@@ -23,17 +23,8 @@ export default function getEndpoints(file) {
 							path = property.value.body.value
 						} else {
 							walk.simple(property.value, {
-								CallExpression(node) {
-									if(node.callee.type === "MemberExpression" && node.callee.object.type === "Literal") {
-										path += node.callee.object.value
-									}
-									for(const argument of node.arguments) {
-										if(argument.type === "Identifier") {
-											path += ":param"
-										} else if(argument.type === "Literal") {
-											path += argument.value
-										}
-									}
+								TemplateLiteral(node) {
+									path = node.quasis.map(x => x.value.raw).join(":param")
 								}
 							})
 						}
